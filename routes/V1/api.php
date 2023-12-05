@@ -25,4 +25,4 @@ Route::delete( 'logout', [LoginController::class, 'logout'] )->middleware(
 Route::middleware( 'auth:sanctum' )->get( '/user', function ( Request $request
 ) {
     return $request->user();
-} );
+} )->middleware( 'ability:user-show' );
