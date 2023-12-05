@@ -5,8 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
@@ -21,27 +20,21 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      */
-    public function register(): void
-    {
-        $this->reportable( function ( Throwable $e )
-        {
+    public function register(): void {
+        $this->reportable( function ( Throwable $e ) {
             //
         } );
     }
 
-    public function render( $request, Throwable $e )
-    {
-        if ( !$request->is( 'api/*' ) )
-        {
+    public function render( $request, Throwable $e ) {
+
+        if ( !$request->is( 'api/*' ) ) {
             return parent::render( $request, $e );
         }
 
         $data = null;
-
-        if ( method_exists( $e, 'errors' ) )
-        {
-            foreach ( $e->errors() ?? [] as $key => $value )
-            {
+        if ( method_exists( $e, 'errors' ) ) {
+            foreach ( $e->errors() ?? [] as $key => $value ) {
                 $data[$key] = $value[0];
             }
         }
@@ -49,133 +42,113 @@ class Handler extends ExceptionHandler
         $message    = $e->getMessage();
         $statusCode = 400;
 
-        if ( method_exists( $e, 'getStatusCode' ) )
-        {
+        if ( method_exists( $e, 'getStatusCode' ) ) {
 
-            if ( $statusCode == 404 )
-            {
-                $message = '404 Not Found';
+            $statusCode = $e->getStatusCode();
+
+            if ( $statusCode == 404 ) {
+                $message = '404 Not found';
             }
 
-            if ( $statusCode == 403 )
-            {
+            if ( $statusCode == 403 ) {
                 $message = '403 Forbidden';
             }
 
-            if ( $statusCode == 401 )
-            {
+            if ( $statusCode == 401 ) {
                 $message = '401 Unauthorized';
             }
 
-            if ( $statusCode == 405 )
-            {
+            if ( $statusCode == 405 ) {
                 $message = '405 Method not allowed';
             }
 
-            if ( $statusCode == 422 )
-            {
-                $message = '422 Unpreocessable entity';
+            if ( $statusCode == 422 ) {
+                $message = '422 Unprocessable entity';
             }
 
-            if ( $statusCode == 500 )
-            {
+            if ( $statusCode == 500 ) {
                 $message = '500 Internal server error';
             }
 
-            if ( $statusCode == 503 )
-            {
-                $message = '503 Service Unavailable';
+            if ( $statusCode == 503 ) {
+                $message = '503 Service unavailable';
             }
 
-            if ( $statusCode == 429 )
-            {
-                $message = '429 Page Expired';
+            if ( $statusCode == 429 ) {
+                $message = '429 Too many requests';
             }
 
-            if ( $statusCode == 400 )
-            {
-                $message = '400 Bad Request';
+            if ( $statusCode == 419 ) {
+                $message = '419 Page expired';
             }
 
-            if ( $statusCode == 408 )
-            {
+            if ( $statusCode == 400 ) {
+                $message = '400 Bad request';
+            }
+
+            if ( $statusCode == 408 ) {
                 $message = '408 Request timeout';
             }
 
-            if ( $statusCode == 409 )
-            {
+            if ( $statusCode == 409 ) {
                 $message = '409 Conflict';
             }
 
-            if ( $statusCode == 410 )
-            {
+            if ( $statusCode == 410 ) {
                 $message = '410 Gone';
             }
 
-            if ( $statusCode == 411 )
-            {
-                $message = '411 Length reuired';
+            if ( $statusCode == 411 ) {
+                $message = '411 Length required';
             }
 
-            if ( $statusCode == 412 )
-            {
-                $message = '412 Prediction failed';
+            if ( $statusCode == 412 ) {
+                $message = '412 Precondition failed';
             }
 
-            if ( $statusCode == 413 )
-            {
+            if ( $statusCode == 413 ) {
                 $message = '413 Payload too large';
             }
 
-            if ( $statusCode == 414 )
-            {
+            if ( $statusCode == 414 ) {
                 $message = '414 URI too long';
             }
 
-            if ( $statusCode == 415 )
-            {
+            if ( $statusCode == 415 ) {
                 $message = '415 Unsupported media type';
             }
 
-            if ( $statusCode == 416 )
-            {
+            if ( $statusCode == 416 ) {
                 $message = '416 Range not satisfiable';
             }
 
-            if ( $statusCode == 417 )
-            {
-                $message = '417 Exception failed';
+            if ( $statusCode == 417 ) {
+                $message = '417 Expectation failed';
             }
 
-            if ( $statusCode == 418 )
-            {
+            if ( $statusCode == 418 ) {
                 $message = '418 I\'m a teapot';
             }
 
-            if ( $statusCode == 421 )
-            {
-                $message = '421 Misdirect request';
+            if ( $statusCode == 421 ) {
+                $message = '421 Misdirected request';
             }
-
         }
 
-        if ( $message == 'Unauthenticated.' )
-        {
+        if ( $message == 'Unauthenticated.' ) {
             $statusCode = 401;
         }
 
-        if ( $message == 'Invalid ability provided' )
-        {
+        if ( $message == 'Invalid ability provided.' ) {
             $statusCode = 403;
-            $message    = 'You don\t have permission to access this resource';
+            $message    = 'You don\'t have permission to access this resource';
         }
 
-        if ( str_contains( $message, 'No query results' ) )
-        {
-            $message    = 'Resource not found';
-            $statusCode = "404";
+        if ( str_contains( $message, 'No query results' ) ) {
+            $message    = 'Resource Not found';
+            $statusCode = 404;
         }
+
         return error( $message, $data, $statusCode );
-
     }
 }

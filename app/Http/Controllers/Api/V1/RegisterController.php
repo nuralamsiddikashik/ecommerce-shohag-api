@@ -15,7 +15,7 @@ class RegisterController extends Controller {
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => $request->password,
-            'role_id'  => $role->role_id,
+            'role_id'  => $role->id,
         ] );
 
         $permissions = $role->permissions->pluck( 'name' )->toArray();
@@ -24,6 +24,7 @@ class RegisterController extends Controller {
         $data = [
             'user'  => $user,
             'token' => $token,
+
         ];
 
         return ok( 'Hello World', $data );

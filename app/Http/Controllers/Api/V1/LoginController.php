@@ -18,10 +18,10 @@ class LoginController extends Controller {
 
         $token = auth()->user()->createToken( 'auth_token', $permissions )->
             plainTextToken;
-        return ok( 'Success', [
-            'token'       => $token,
-            'user'        => auth()->user(),
-            'permissions' => $permissions,
+        return ok( 'Login Success', [
+            'token' => $token,
+            'user'  => auth()->user(),
+
         ] );
 
     }
